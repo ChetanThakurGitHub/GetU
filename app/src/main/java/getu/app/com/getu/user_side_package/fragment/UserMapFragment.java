@@ -1,91 +1,86 @@
 package getu.app.com.getu.user_side_package.fragment;
 
-        import android.Manifest;
-        import android.app.Dialog;
-        import android.app.ProgressDialog;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.pm.PackageManager;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.graphics.Canvas;
-        import android.graphics.Color;
-        import android.graphics.Paint;
-        import android.graphics.Point;
-        import android.graphics.PorterDuff;
-        import android.graphics.drawable.Drawable;
-        import android.location.Address;
-        import android.location.Geocoder;
-        import android.location.Location;
-        import android.os.Bundle;
-        import android.os.Handler;
-        import android.os.SystemClock;
-        import android.support.annotation.DrawableRes;
-        import android.support.v4.app.ActivityCompat;
-        import android.support.v4.app.Fragment;
-        import android.support.v7.widget.GridLayoutManager;
-        import android.support.v7.widget.RecyclerView;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.view.animation.BounceInterpolator;
-        import android.view.animation.Interpolator;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.Interpolator;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.android.volley.DefaultRetryPolicy;
-        import com.android.volley.NetworkResponse;
-        import com.android.volley.Request;
-        import com.android.volley.Response;
-        import com.android.volley.VolleyError;
-        import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-        import com.google.android.gms.common.GooglePlayServicesRepairableException;
-        import com.google.android.gms.common.api.Status;
-        import com.google.android.gms.location.FusedLocationProviderClient;
-        import com.google.android.gms.location.LocationServices;
-        import com.google.android.gms.location.places.Place;
-        import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-        import com.google.android.gms.maps.CameraUpdate;
-        import com.google.android.gms.maps.CameraUpdateFactory;
-        import com.google.android.gms.maps.GoogleMap;
-        import com.google.android.gms.maps.MapView;
-        import com.google.android.gms.maps.MapsInitializer;
-        import com.google.android.gms.maps.OnMapReadyCallback;
-        import com.google.android.gms.maps.Projection;
-        import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-        import com.google.android.gms.maps.model.LatLng;
-        import com.google.android.gms.maps.model.Marker;
-        import com.google.android.gms.maps.model.MarkerOptions;
-        import com.google.android.gms.tasks.OnSuccessListener;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
-        import org.json.JSONArray;
-        import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-        import java.io.IOException;
-        import java.util.ArrayList;
-        import java.util.HashMap;
-        import java.util.List;
-        import java.util.Locale;
-        import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-        import getu.app.com.getu.R;
-        import getu.app.com.getu.adapter.CustomSpAdapter;
-        import getu.app.com.getu.app_session.Session;
-        import getu.app.com.getu.hepler.PermissionAll;
-        import getu.app.com.getu.pagination.EndlessRecyclerViewScrollListener;
-        import getu.app.com.getu.user_side_package.acrivity.UserMainActivity;
-        import getu.app.com.getu.user_side_package.adapter.MapUserAdapter;
-        import getu.app.com.getu.user_side_package.listener.CustomItemClickListener;
-        import getu.app.com.getu.user_side_package.model.UserList;
-        import getu.app.com.getu.util.Constant;
-        import getu.app.com.getu.util.Utils;
-        import getu.app.com.getu.vollyemultipart.VolleyMultipartRequest;
-        import getu.app.com.getu.vollyemultipart.VolleySingleton;
+import getu.app.com.getu.R;
+import getu.app.com.getu.app_session.Session;
+import getu.app.com.getu.hepler.PermissionAll;
+import getu.app.com.getu.pagination.EndlessRecyclerViewScrollListener;
+import getu.app.com.getu.user_side_package.acrivity.UserMainActivity;
+import getu.app.com.getu.user_side_package.adapter.MapUserAdapter;
+import getu.app.com.getu.user_side_package.listener.CustomItemClickListener;
+import getu.app.com.getu.user_side_package.model.UserList;
+import getu.app.com.getu.util.Constant;
+import getu.app.com.getu.util.Utils;
+import getu.app.com.getu.vollyemultipart.VolleyMultipartRequest;
+import getu.app.com.getu.vollyemultipart.VolleySingleton;
 
-        import static android.app.Activity.RESULT_CANCELED;
-        import static android.app.Activity.RESULT_OK;
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class UserMapFragment extends Fragment implements OnMapReadyCallback, CustomItemClickListener {
     private static final String ARG_PARAM1 = "param1";
@@ -130,7 +125,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback, Cus
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_user_map, container, false);
         toolbar(view);
@@ -146,12 +141,10 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback, Cus
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
+
                 loadNextDataFromApi(page, totalItemsCount);
             }
         };
-
 
         mapview.onCreate(savedInstanceState);
         mapview.onResume();
@@ -178,10 +171,6 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback, Cus
     }
 
     public void loadNextDataFromApi(int page, int totalItemsCount) {
-//        Toast.makeText(mContext, page + "", Toast.LENGTH_SHORT).show();
-//        Toast.makeText(mContext, totalItemsCount + "", Toast.LENGTH_SHORT).show();
-        Log.e(TAG, "loadNextDataFromApi: " + page);
-        Log.e(TAG, "loadNextDataFromApi: " + limit);
         getAllData();
     } // pagination
 
@@ -198,9 +187,9 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback, Cus
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
 
         } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
+           e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
+           e.printStackTrace();
         }
     }
 
@@ -214,7 +203,6 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback, Cus
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
                 latitude = place.getLatLng().latitude;
                 longitude = place.getLatLng().longitude;
-                Log.i(TAG, "Place: " + place.getName());
 
                 String placename = String.valueOf(place.getName());
                 tv_for_search.setText(placename);
@@ -447,7 +435,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback, Cus
                     ((UserMainActivity) getContext()).addFragment(ChatProfileFragment.newInstance(mapUserList, ""), true, R.id.framlayout);
 
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
 
                 return false;

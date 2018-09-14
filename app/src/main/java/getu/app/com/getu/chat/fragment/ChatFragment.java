@@ -143,7 +143,6 @@ public class ChatFragment extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 ChatHistory messageOutput = dataSnapshot.getValue(ChatHistory.class);
-//                Log.e("Chatting", "User: " + messageOutput.uid + " message: " + messageOutput.message);
                 if (!messageOutput.deleteby.equals(session.getUserID())) {
                     listmap.put(dataSnapshot.getKey(),messageOutput);
                     layout_for_noData.setVisibility(View.GONE);

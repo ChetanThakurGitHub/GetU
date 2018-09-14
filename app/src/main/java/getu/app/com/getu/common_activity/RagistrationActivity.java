@@ -4,51 +4,40 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -57,15 +46,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -77,11 +61,9 @@ import java.util.Map;
 
 import getu.app.com.getu.R;
 import getu.app.com.getu.adapter.CustomSpAdapter;
-import getu.app.com.getu.app_session.Session;
 import getu.app.com.getu.hepler.PermissionAll;
 import getu.app.com.getu.model.Category;
 import getu.app.com.getu.model.CodeInfo;
-import getu.app.com.getu.model.UserDetails;
 import getu.app.com.getu.util.Constant;
 import getu.app.com.getu.util.Utils;
 import getu.app.com.getu.vollyemultipart.AppHelper;
@@ -92,7 +74,6 @@ import io.michaelrocks.libphonenumber.android.PhoneNumberUtil;
 import io.michaelrocks.libphonenumber.android.Phonenumber;
 
 import static getu.app.com.getu.util.Constant.MY_PERMISSIONS_REQUEST_CAMERA;
-import static getu.app.com.getu.util.Constant.MY_PERMISSIONS_REQUEST_LOCATION;
 
 public class RagistrationActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -109,12 +90,13 @@ public class RagistrationActivity extends AppCompatActivity implements View.OnCl
     private Intent intent;
     private Bitmap bitmap;
     private boolean checkBox = false;
-    private String countryCode, cName;
+    private String countryCode;
     private Boolean isvalidate = false;
     private CustomSpAdapter customSpAdapter;
     private ArrayList<Category> arrayList;
     private String sCatId;
-    private String catID = "", deviceToken,city;
+    private String deviceToken;
+    private String city;
     private Double latitude, longitude;
     private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
     private final String TAG = this.getClass().getSimpleName();
@@ -141,7 +123,6 @@ public class RagistrationActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
-        cName = Constant.CATEGORY_Name;
         Firebase.setAndroidContext(this);
 
         if (Constant.USER_TYPE.equals("0")) {
@@ -158,9 +139,7 @@ public class RagistrationActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onItemSelected(AdapterView<?> parentView, View v, int position, long id) {
                 Category category = arrayList.get(position);
-                cName = category.cName;
                 Constant.CATEGORY_ID = category.cID;
-                catID = category.cID;
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
@@ -317,40 +296,40 @@ public class RagistrationActivity extends AppCompatActivity implements View.OnCl
     }  // backpressed manage
 
     private void checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Check Permissions Now
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Check Permissions Now
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Display UI and wait for user interaction
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // Display UI and wait for user interaction
+                } else {
+                    ActivityCompat.requestPermissions(
+                            this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            3);
+                }
             } else {
-                ActivityCompat.requestPermissions(
-                        this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        3);
-            }
-        } else {
-            // permission has been granted, continue as usual
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                // Logic to handle location object
-                                latitude = Double.valueOf(String.valueOf(location.getLatitude()));
-                                longitude = Double.valueOf(String.valueOf(location.getLongitude()));
+                // permission has been granted, continue as usual
+                mFusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    // Logic to handle location object
+                                    latitude = Double.valueOf(String.valueOf(location.getLatitude()));
+                                    longitude = Double.valueOf(String.valueOf(location.getLongitude()));
 
-                                try {
-                                    latlong(latitude, longitude);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                    try {
+                                        latlong(latitude, longitude);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
-                        }
-                    });
-        }
-    } // parmission for location and code after parmission
+                        });
+            }
+        } // parmission for location and code after parmission
 
     public void validationLogin() {
 

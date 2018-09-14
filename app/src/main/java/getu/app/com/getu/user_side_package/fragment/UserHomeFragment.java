@@ -77,7 +77,7 @@ import getu.app.com.getu.vollyemultipart.VolleySingleton;
 
 public class UserHomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
-    private String mParam1, sCatId;
+    private String sCatId;
     private ImageView iv_for_map;
     private TextView tv_for_noData;
     private RecyclerView recycler_view;
@@ -90,7 +90,6 @@ public class UserHomeFragment extends Fragment {
     private FusedLocationProviderClient mFusedLocationClient;
     private Double latitude, longitude;
     private Session session;
-    private EndlessRecyclerViewScrollListener scrollListener;
     private final String TAG = this.getClass().getSimpleName();
     private int page = 0, limit = 20, apiSingleCall;
     private Bundle bundle;
@@ -113,7 +112,7 @@ public class UserHomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam1 = getArguments().getString(ARG_PARAM1);
         }
     }
 
@@ -148,7 +147,7 @@ public class UserHomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recycler_view.setLayoutManager(linearLayoutManager);
 
-       scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list

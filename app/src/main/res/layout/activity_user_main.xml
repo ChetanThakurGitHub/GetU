@@ -7,8 +7,7 @@
         android:id="@+id/framlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/layout_for_tapbar"
-        />
+        android:layout_above="@+id/layout_for_tapbar" />
 
     <LinearLayout
         android:id="@+id/layout_for_tapbar"

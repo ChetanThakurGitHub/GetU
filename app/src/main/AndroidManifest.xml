@@ -120,7 +120,7 @@
         <activity
             android:name=".common_activity.NotificationUserDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/OTPTheme"></activity>
+            android:theme="@style/OTPTheme"/>
         <activity
             android:name=".user_side_package.acrivity.AboutUsActivity"
             android:screenOrientation="portrait"
